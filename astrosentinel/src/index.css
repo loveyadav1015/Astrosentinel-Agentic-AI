@@ -15,7 +15,10 @@
 }
 
 /* ── Base Reset ───────────────────────────────────────────────────── */
+*, *::before, *::after {
 
+  
+}
 
 html {
   scroll-behavior: smooth;

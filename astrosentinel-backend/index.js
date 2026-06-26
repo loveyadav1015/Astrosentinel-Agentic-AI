@@ -92,7 +92,10 @@ app.get('/api/chat', async (req, res) => {
 app.post('/api/chat', async (req, res) => {
     try {
         const { role, text } = req.body;
-        
+
+        if (typeof role !== 'string' || typeof text !== 'string' || !role.trim() || !text.trim()) {
+            return res.status(400).json({ error: 'role and text are required' });
+        }
         // Use $1 and $2 to safely insert data and prevent SQL injection
         const insertQuery = `
             INSERT INTO chats (role, text) 

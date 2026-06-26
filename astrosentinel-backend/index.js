@@ -17,10 +17,12 @@ const pool = new Pool({
 });
 
 // Test connection and auto-create the table on startup
-pool.connect()
-    .then((client) => {
+(async () => {
+    let client;
+    try {
+        client = await pool.connect();
         console.log('✅ Connected to PostgreSQL');
-        
+
         // This automatically builds your database structure!
         const createTableQuery = `
             CREATE TABLE IF NOT EXISTS chats (
@@ -30,12 +32,16 @@ pool.connect()
                 timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         `;
-        return client.query(createTableQuery).then(() => {
-            console.log('✅ Chats table is ready');
-            client.release();
-        });
-    })
-    .catch((err) => console.error('❌ PostgreSQL connection error:', err.message));
+
+        await client.query(createTableQuery);
+        console.log('✅ Chats table is ready');
+    } catch (err) {
+        console.error('❌ PostgreSQL startup error:', err.message);
+        process.exit(1);
+    } finally {
+        if (client) client.release();
+    }
+})();
 
 
 // --- NASA API ROUTE ---

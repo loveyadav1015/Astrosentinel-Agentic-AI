@@ -5,7 +5,7 @@ const axios = require('axios');
 const { Pool } = require('pg');
 
 const app = express();
-const PORT = process.env.PORT ;
+const PORT = Number.isFinite(Number(process.env.PORT)) ? Number(process.env.PORT) : 3000;
 
 app.use(cors());
 app.use(express.json());

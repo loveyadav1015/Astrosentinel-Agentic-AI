@@ -52,7 +52,7 @@ app.get('/api/neo', async (req, res) => {
         const nasaUrl = `https://api.nasa.gov/neo/rest/v1/feed?start_date=${today}&end_date=${today}&api_key=${apiKey}`;
 
         const response = await axios.get(nasaUrl);
-        const neoObjects = response.data.near_earth_objects[today] || [];
+        const neoObjects = response.data.near_earth_objects?.[today] ?? [];
         
         const formattedData = {
             totalMonitored: response.data.element_count,

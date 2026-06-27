@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { NavLink, Link } from "react-router-dom";
-import NeoAsteroidIcon from "./NeoAsteroidIcon";
 
 const navLinks = [
   { to: "/dashboard", label: "Dashboard" },
@@ -18,30 +17,27 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <nav className="relative z-50 bg-transparent">
+    <nav className="relative z-50 bg-transparent border-none">
+      {/* bg-transparent ensures it perfectly matches your space background image */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* justify-between will now elegantly push the logo left and the links right */}
         <div className="flex items-center justify-between h-16">
+          
           {/* Logo */}
           <Link
             to="/"
-            className="text-[#F9FAFB] text-xl font-bold tracking-tight flex items-center gap-2 shrink-0"
+            className="text-[#F9FAFB] text-xl font-bold tracking-tight flex items-center shrink-0"
           >
-            <NeoAsteroidIcon />
             <span>AstroSentinel</span>
           </Link>
 
-          {/* Center nav – desktop */}
+          {/* Center/Right nav – desktop */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
               <NavLink key={link.to} to={link.to} className={linkClass}>
                 {link.label}
               </NavLink>
             ))}
-          </div>
-
-          {/* Right side – status (UPDATED: Removed blinking dot) */}
-          <div className="hidden md:flex items-center gap-2 text-sm text-[#9CA3AF]">
-            <span>System:&nbsp;<span className="text-green-400 font-medium">Live</span></span>
           </div>
 
           {/* Mobile hamburger */}
@@ -82,11 +78,6 @@ export default function Navbar() {
               {link.label}
             </NavLink>
           ))}
-
-          {/* Mobile status (UPDATED: Removed blinking dot) */}
-          <div className="flex items-center gap-2 text-sm text-[#9CA3AF] pt-2 px-3">
-            <span>System:&nbsp;<span className="text-green-400 font-medium">Live</span></span>
-          </div>
         </div>
       )}
     </nav>

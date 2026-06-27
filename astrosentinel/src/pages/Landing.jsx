@@ -45,11 +45,11 @@ export default function Landing() {
         
         {/* Deep Space Star Background */}
         <div className="absolute inset-0 z-0 bg-transparent"
-          style={{
-            background: 'radial-gradient(ellipse at center, #0d1b2a 0%, #0B0F1A 70%)',
-          }}
+          // style={{
+          //   background: 'radial-gradient(ellipse at center, #0d1b2a 0%, #0B0F1A 70%)',
+          // }}
         >
-          {/* CSS stars */}
+          {/* CSS stars
           {Array.from({ length: 80 }).map((_, i) => (
             <div
               key={i}
@@ -64,11 +64,11 @@ export default function Landing() {
                 animationDelay: `${Math.random() * 2}s`,
               }}
             />
-          ))}
+          ))} */}
         </div>
         
         {/* Gradient fade at bottom */}
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0B0F1A]/80 to-transparent z-[2]" />
+        {/* <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0B0F1A]/80 to-transparent z-[2]" /> */}
         
         {/* Hero Overlay Content */}
         <div className="relative z-10 flex flex-col items-center justify-end min-h-[100vh] pb-28 px-6 text-center">

@@ -26,7 +26,7 @@ html {
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background-image: url('/background.png');
+  background-image: url('assets/image.png');
   background-size: cover;
   background-attachment: fixed;
   background-position: center;

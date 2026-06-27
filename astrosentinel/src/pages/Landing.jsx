@@ -1,14 +1,8 @@
-import React, { useState, useEffect, Suspense, lazy } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import MetricCard from '../components/MetricCard';
-import StepFlow from '../components/StepFlow';
+// import StepFlow from '../components/StepFlow';
 import TierLegend from '../components/TierLegend';
-
-// Lazy-load the heavy 3D scene
-const HeroScene = lazy(() => import('../three/HeroScene'));
-
-// Simple check for low-end devices
-const isLowEnd = typeof navigator !== 'undefined' && navigator.hardwareConcurrency < 2;
 
 export default function Landing() {
   const [email, setEmail] = useState('');
@@ -20,7 +14,7 @@ export default function Landing() {
 
   // --- FETCH LIVE DATA ---
   useEffect(() => {
-    fetch('http://localhost:5000/api/neo')
+    fetch('http://localhost:5000/api/neo') 
       .then((res) => {
         if (!res.ok) throw new Error('Failed to connect to backend');
         return res.json();
@@ -46,48 +40,32 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen">
-      {/* ── 3D Hero Section ───────────────────────────────────────── */}
+      {/* ── Hero Section ───────────────────────────────────────── */}
       <section className="relative w-full" style={{ height: '100vh' }}>
         
-        {/* 3D Solar System Background */}
-        {!isLowEnd ? (
-          <div className="absolute inset-0 z-0">
-            <Suspense fallback={
-              <div className="w-full h-full bg-[#0B0F1A]/60 backdrop-blur-sm flex items-center justify-center">
-                <div className="flex flex-col items-center gap-3">
-                  <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                  <span className="text-[#9CA3AF] text-sm">Initializing solar system...</span>
-                </div>
-              </div>
-            }>
-              <HeroScene style={{ width: '100%', height: '100%', display: 'block' }} />
-            </Suspense>
-          </div>
-        ) : (
-          /* Fallback for low-end devices */
-          <div className="absolute inset-0 z-0 bg-transparent"
-            style={{
-              background: 'radial-gradient(ellipse at center, #0d1b2a 0%, #0B0F1A 70%)',
-            }}
-          >
-            {/* CSS stars fallback */}
-            {Array.from({ length: 80 }).map((_, i) => (
-              <div
-                key={i}
-                className="absolute rounded-full bg-white"
-                style={{
-                  width: Math.random() * 2 + 1,
-                  height: Math.random() * 2 + 1,
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  opacity: Math.random() * 0.6 + 0.2,
-                  animation: `pulse-dot ${2 + Math.random() * 3}s ease-in-out infinite`,
-                  animationDelay: `${Math.random() * 2}s`,
-                }}
-              />
-            ))}
-          </div>
-        )}
+        {/* Deep Space Star Background */}
+        <div className="absolute inset-0 z-0 bg-transparent"
+          style={{
+            background: 'radial-gradient(ellipse at center, #0d1b2a 0%, #0B0F1A 70%)',
+          }}
+        >
+          {/* CSS stars */}
+          {Array.from({ length: 80 }).map((_, i) => (
+            <div
+              key={i}
+              className="absolute rounded-full bg-white"
+              style={{
+                width: Math.random() * 2 + 1,
+                height: Math.random() * 2 + 1,
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                opacity: Math.random() * 0.6 + 0.2,
+                animation: `pulse-dot ${2 + Math.random() * 3}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 2}s`,
+              }}
+            />
+          ))}
+        </div>
         
         {/* Gradient fade at bottom */}
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0B0F1A]/80 to-transparent z-[2]" />
@@ -112,7 +90,7 @@ export default function Landing() {
             className="text-xl md:text-2xl text-[#d1d5db] max-w-2xl mx-auto mb-10 animate-fade-in-up delay-200 leading-relaxed"
             style={{ animationFillMode: 'both', textShadow: '0 2px 20px rgba(0,0,0,0.7)' }}
           >
-            Autonomous NEO threat monitoring. No human required.
+            Autonomous NEO threat monitoring.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up delay-300" style={{ animationFillMode: 'both' }}>
@@ -160,30 +138,51 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── How It Works ─────────────────────────────────────────── */}
-      <section className="max-w-6xl mx-auto px-6 py-24">
-        <div className="text-center mb-12">
+      {/* ── How It Works (Agentic Pipeline) ──────────────────────── */}
+      <section className="max-w-7xl mx-auto px-6 py-24 relative z-20">
+        <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            How It Works
+            The Autonomous Defense Pipeline
           </h2>
-          <p className="text-[#9CA3AF] text-lg max-w-xl mx-auto">
-            Three autonomous agents working in concert to keep Earth safe.
+          <p className="text-[#9CA3AF] text-lg max-w-2xl mx-auto">
+            A high-speed RAG architecture transforming raw space telemetry into actionable threat intelligence.
           </p>
         </div>
-        <StepFlow />
-      </section>
 
-      {/* ── Risk Tiers ───────────────────────────────────────────── */}
-      <section className="max-w-6xl mx-auto px-6 pb-24">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Risk Classification Tiers
-          </h2>
-          <p className="text-[#9CA3AF] text-lg max-w-xl mx-auto">
-            Every near-Earth object is classified into one of three threat levels.
-          </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Step 1 */}
+          <div className="bg-[#111827]/60 backdrop-blur-md border border-[#1F2937] hover:border-blue-500/50 rounded-2xl p-8 transition-all hover:-translate-y-1">
+            <div className="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center text-blue-400 font-bold text-xl mb-6 border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+              01
+            </div>
+            <h3 className="text-xl font-bold text-white mb-3">Live Telemetry Ingestion</h3>
+            <p className="text-[#9CA3AF] leading-relaxed">
+              The Node.js backend continuously polls NASA's NeoWs API, stripping excess metadata to isolate precise orbital trajectories, velocities, and approach distances.
+            </p>
+          </div>
+
+          {/* Step 2 */}
+          <div className="bg-[#111827]/60 backdrop-blur-md border border-[#1F2937] hover:border-blue-500/50 rounded-2xl p-8 transition-all hover:-translate-y-1">
+            <div className="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center text-blue-400 font-bold text-xl mb-6 border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+              02
+            </div>
+            <h3 className="text-xl font-bold text-white mb-3">RAG Intelligence Engine</h3>
+            <p className="text-[#9CA3AF] leading-relaxed">
+              Live telemetry is injected into the context window of our Llama 3.1 model via Groq's high-speed LPUs, allowing the AI to autonomously classify threat tiers without hallucinations.
+            </p>
+          </div>
+
+          {/* Step 3 */}
+          <div className="bg-[#111827]/60 backdrop-blur-md border border-[#1F2937] hover:border-blue-500/50 rounded-2xl p-8 transition-all hover:-translate-y-1">
+            <div className="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center text-blue-400 font-bold text-xl mb-6 border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+              03
+            </div>
+            <h3 className="text-xl font-bold text-white mb-3">Persistent State & UI</h3>
+            <p className="text-[#9CA3AF] leading-relaxed">
+              Threat assessments are beamed to the React frontend and securely logged in a PostgreSQL database pool, creating a persistent, auditable history of the threat landscape.
+            </p>
+          </div>
         </div>
-        <TierLegend />
       </section>
 
       {/* ── Subscribe CTA ────────────────────────────────────────── */}

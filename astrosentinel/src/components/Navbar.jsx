@@ -39,12 +39,8 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Right side – status */}
+          {/* Right side – status (UPDATED: Removed blinking dot) */}
           <div className="hidden md:flex items-center gap-2 text-sm text-[#9CA3AF]">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
-            </span>
             <span>System:&nbsp;<span className="text-green-400 font-medium">Live</span></span>
           </div>
 
@@ -87,11 +83,8 @@ export default function Navbar() {
             </NavLink>
           ))}
 
+          {/* Mobile status (UPDATED: Removed blinking dot) */}
           <div className="flex items-center gap-2 text-sm text-[#9CA3AF] pt-2 px-3">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
-            </span>
             <span>System:&nbsp;<span className="text-green-400 font-medium">Live</span></span>
           </div>
         </div>

@@ -5,14 +5,14 @@ import FAQ from '../components/FAQ';
 const AboutScene = lazy(() => import('../three/AboutScene'));
 
 const techStack = [
-  { name: 'NASA NEO API', desc: 'Primary data source for near-Earth object close-approach data', icon: '🛰' },
-  { name: 'Python', desc: 'Agent orchestration, data processing, and API integration', icon: '🐍' },
-  { name: 'LLM (Claude API)', desc: 'Risk classification reasoning engine and natural language assessments', icon: '🧠' },
-  { name: 'PostgreSQL', desc: 'Persistent storage for object tracking, alert history, and audit logs', icon: '💾' },
-  { name: 'Plotly / Matplotlib', desc: 'Orbital visualization and trajectory rendering for PDF reports', icon: '📊' },
-  { name: 'Slack Webhooks', desc: 'Real-time team notifications for Elevated and Critical tier events', icon: '💬' },
-  { name: 'SMTP (Email)', desc: 'Stakeholder digest emails and critical alert notifications', icon: '📧' },
-  { name: 'React + Vite', desc: 'Live operator dashboard with real-time data visualization', icon: '⚛️' },
+  { name: 'NASA NEO API', desc: 'Primary data source for live near-Earth object telemetry and close-approach data', icon: '🛰' },
+  { name: 'Node.js & Express', desc: 'High-performance backend for API orchestration and data pipeline routing', icon: '⚙️' },
+  { name: 'Groq API (Llama 3.1)', desc: 'Lightning-fast LPU inference powering the RAG-based AI threat analyst', icon: '🧠' },
+  { name: 'PostgreSQL', desc: 'Persistent state management for conversational history and system logs', icon: '💾' },
+  { name: 'Three.js (R3F)', desc: 'Immersive 3D orbital visualization and interactive spatial rendering', icon: '🌌' },
+  { name: 'React + Vite', desc: 'High-speed frontend framework for the real-time operator dashboard', icon: '⚛️' },
+  { name: 'Tailwind CSS', desc: 'Utility-first styling for a sleek, futuristic deep-space UI', icon: '🎨' },
+  { name: 'RAG Architecture', desc: 'Retrieval-Augmented Generation pipeline bridging live data with LLM reasoning', icon: '🔗' },
 ];
 
 export default function About() {
@@ -25,8 +25,8 @@ export default function About() {
             How AstroSentinel Works
           </h1>
           <p className="text-[#9CA3AF] text-lg max-w-2xl mx-auto leading-relaxed">
-            A fully autonomous multi-agent system that monitors, classifies, and reports 
-            near-Earth object threats — operating continuously without human intervention.
+            A fully autonomous, RAG-powered orbital defense system that monitors, classifies, 
+            and analyzes near-Earth object threats in real-time.
           </p>
         </div>
 
@@ -34,8 +34,8 @@ export default function About() {
         <section className="mb-20">
           <h2 className="text-2xl font-bold text-white mb-2">System Architecture</h2>
           <p className="text-[#9CA3AF] mb-8">
-            Three specialized agents coordinate through a shared data store to deliver 
-            end-to-end threat assessment.
+            A unified pipeline integrating live deep-space telemetry with high-speed language processing 
+            and interactive 3D rendering.
           </p>
           {/* 3D Agent Pipeline Visualization */}
           <div className="mb-8">
@@ -66,13 +66,12 @@ export default function About() {
               <div className="flex items-start gap-4">
                 <span className="text-3xl">1️⃣</span>
                 <div>
-                  <h3 className="text-lg font-bold text-white mb-2">Ingestion & Monitoring</h3>
+                  <h3 className="text-lg font-bold text-white mb-2">Live Data Ingestion</h3>
                   <p className="text-[#9CA3AF] leading-relaxed">
-                    The Monitor Agent continuously polls NASA's NeoWs API at configurable intervals 
-                    (1–6 hours, increasing to 15 minutes during high-activity periods). It ingests 
-                    close-approach data, orbital elements, diameter estimates, and hazard flags for 
-                    all known near-Earth objects. New discoveries are cross-referenced with the 
-                    Minor Planet Center within minutes of publication.
+                    The Node.js backend acts as the central nervous system, continuously polling NASA's 
+                    NeoWs REST API. It ingests current-day close approach data, stripping away excess 
+                    metadata to calculate exact diameters, relative velocities, and miss distances. 
+                    This creates a lightweight, highly accurate telemetry string for the system to process.
                   </p>
                 </div>
               </div>
@@ -82,14 +81,13 @@ export default function About() {
               <div className="flex items-start gap-4">
                 <span className="text-3xl">2️⃣</span>
                 <div>
-                  <h3 className="text-lg font-bold text-white mb-2">Risk Classification</h3>
+                  <h3 className="text-lg font-bold text-white mb-2">RAG Intelligence & Assessment</h3>
                   <p className="text-[#9CA3AF] leading-relaxed">
-                    The Reasoning Engine evaluates each object against a multi-factor risk model. 
-                    It considers estimated diameter (mass proxy), relative velocity, minimum orbit 
-                    intersection distance (MOID), close-approach distance in Lunar Distances, 
-                    orbital uncertainty parameter, and the Palermo Technical Impact Hazard Scale. 
-                    An LLM synthesizes these inputs into a human-readable risk assessment and assigns 
-                    a tier: Watch, Elevated, or Critical.
+                    When an operator queries the system, AstroSentinel utilizes a Retrieval-Augmented Generation 
+                    (RAG) pipeline. The live NASA telemetry is injected directly into the context window of 
+                    the Llama 3.1 model via Groq's high-speed LPUs. This grants the AI agent complete, 
+                    hallucination-free awareness of the current solar system state, allowing it to accurately 
+                    classify threats into Watch, Elevated, or Critical tiers.
                   </p>
                 </div>
               </div>
@@ -99,14 +97,13 @@ export default function About() {
               <div className="flex items-start gap-4">
                 <span className="text-3xl">3️⃣</span>
                 <div>
-                  <h3 className="text-lg font-bold text-white mb-2">Reporting & Alerting</h3>
+                  <h3 className="text-lg font-bold text-white mb-2">Operator Interface & Logging</h3>
                   <p className="text-[#9CA3AF] leading-relaxed">
-                    The Reporter Agent delivers classified threat data through three channels. 
-                    Critical-tier objects trigger immediate Slack, email, and webhook alerts. 
-                    Elevated objects generate hourly digest notifications. Watch-tier objects 
-                    are compiled into daily summary reports. Auto-generated PDF briefs include 
-                    orbital visualizations, risk rationale, and recommended actions for each 
-                    flagged object.
+                    The processed data is beamed to a React-based frontend featuring an immersive Three.js 
+                    orbital visualization. Operators can interact with the AI agent in real-time through a 
+                    persistent chat interface. All threat assessments, queries, and conversational states 
+                    are securely logged and managed via a PostgreSQL database pool, ensuring full auditability 
+                    of the defense network.
                   </p>
                 </div>
               </div>

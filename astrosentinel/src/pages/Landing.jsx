@@ -1,9 +1,8 @@
-import React, { useState, Suspense, lazy } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { Link } from 'react-router-dom';
 import MetricCard from '../components/MetricCard';
 import StepFlow from '../components/StepFlow';
 import TierLegend from '../components/TierLegend';
-import { getDashboardStats, getLastScanTime } from '../data/mockData';
 
 // Lazy-load the heavy 3D scene
 const HeroScene = lazy(() => import('../three/HeroScene'));
@@ -14,7 +13,28 @@ const isLowEnd = typeof navigator !== 'undefined' && navigator.hardwareConcurren
 export default function Landing() {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
-  const stats = getDashboardStats();
+  
+  // --- LIVE DATA STATE ---
+  const [telemetry, setTelemetry] = useState(null);
+  const [lastScan, setLastScan] = useState('Connecting...');
+
+  // --- FETCH LIVE DATA ---
+  useEffect(() => {
+    fetch('http://localhost:5000/api/neo')
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to connect to backend');
+        return res.json();
+      })
+      .then((data) => {
+        setTelemetry(data);
+        // Format time to look like "5:44:02 pm"
+        setLastScan(new Date().toLocaleTimeString('en-US')); 
+      })
+      .catch((err) => {
+        console.error("Error fetching landing stats:", err);
+        setLastScan('Offline');
+      });
+  }, []);
 
   const handleSubscribe = (e) => {
     e.preventDefault();
@@ -33,7 +53,7 @@ export default function Landing() {
         {!isLowEnd ? (
           <div className="absolute inset-0 z-0">
             <Suspense fallback={
-              <div className="w-full h-full bg-[#0B0F1A] flex items-center justify-center">
+              <div className="w-full h-full bg-[#0B0F1A]/60 backdrop-blur-sm flex items-center justify-center">
                 <div className="flex flex-col items-center gap-3">
                   <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
                   <span className="text-[#9CA3AF] text-sm">Initializing solar system...</span>
@@ -45,7 +65,7 @@ export default function Landing() {
           </div>
         ) : (
           /* Fallback for low-end devices */
-          <div className="absolute inset-0 z-0 bg-[#0B0F1A]"
+          <div className="absolute inset-0 z-0 bg-transparent"
             style={{
               background: 'radial-gradient(ellipse at center, #0d1b2a 0%, #0B0F1A 70%)',
             }}
@@ -70,7 +90,7 @@ export default function Landing() {
         )}
         
         {/* Gradient fade at bottom */}
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0B0F1A] to-transparent z-[2]" />
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0B0F1A]/80 to-transparent z-[2]" />
         
         {/* Hero Overlay Content */}
         <div className="relative z-10 flex flex-col items-center justify-end min-h-[100vh] pb-28 px-6 text-center">
@@ -115,14 +135,27 @@ export default function Landing() {
       {/* ── Stats Bar ────────────────────────────────────────────── */}
       <section className="max-w-6xl mx-auto px-6 -mt-10 relative z-20">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <MetricCard icon="🌍" label="Objects Monitored Today" value={stats.total} />
-          <MetricCard icon="🚨" label="Active Alerts" value={stats.critical + stats.elevated} accentColor="#EF4444" />
-          <MetricCard icon="🕐" label="Last Scan" value={getLastScanTime().split(',')[1]?.trim() || 'Just now'} />
+          <MetricCard 
+            icon="🌍" 
+            label="Objects Monitored Today" 
+            value={telemetry ? telemetry.totalMonitored : 0} 
+          />
+          <MetricCard 
+            icon="🚨" 
+            label="Active Alerts" 
+            value={telemetry ? telemetry.activeAlerts : 0} 
+            accentColor="#EF4444" 
+          />
+          <MetricCard 
+            icon="🕐" 
+            label="Last Scan" 
+            value={lastScan} 
+          />
           <MetricCard
             icon="✅"
             label="System Status"
-            value="Operational"
-            accentColor="#22C55E"
+            value={telemetry ? "Operational" : "Connecting..."}
+            accentColor={telemetry ? "#22C55E" : "#F59E0B"}
           />
         </div>
       </section>
@@ -154,7 +187,7 @@ export default function Landing() {
       </section>
 
       {/* ── Subscribe CTA ────────────────────────────────────────── */}
-      <section className="border-t border-[#1F2937]">
+      <section className="border-t border-[#1F2937]/60">
         <div className="max-w-2xl mx-auto px-6 py-20 text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
             Stay Informed
@@ -175,7 +208,7 @@ export default function Landing() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
                 required
-                className="flex-1 bg-[#111827] border border-[#1F2937] rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
+                className="flex-1 bg-[#111827]/70 backdrop-blur-sm border border-[#1F2937]/80 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
               />
               <button
                 type="submit"

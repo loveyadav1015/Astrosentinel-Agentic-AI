@@ -64,7 +64,7 @@ export default function FAQ() {
         return (
           <div
             key={i}
-            className="bg-[#111827] border border-[#1F2937] rounded-xl overflow-hidden mb-3"
+            className="bg-[#111827]/70 backdrop-blur-sm border border-[#1F2937]/80 rounded-xl overflow-hidden mb-3"
           >
             <button
               onClick={() => toggle(i)}

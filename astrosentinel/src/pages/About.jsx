@@ -41,7 +41,7 @@ export default function About() {
           <div className="mb-8">
             <Suspense fallback={
               <div
-                className="bg-[#111827] border border-[#1F2937] rounded-xl flex items-center justify-center"
+                className="bg-[#111827]/70 backdrop-blur-sm border border-[#1F2937]/80 rounded-xl flex items-center justify-center"
                 style={{ height: 320 }}
               >
                 <div className="flex items-center gap-3 text-[#9CA3AF] text-sm">
@@ -62,7 +62,7 @@ export default function About() {
         <section className="mb-20">
           <h2 className="text-2xl font-bold text-white mb-8">The Pipeline</h2>
           <div className="space-y-6 mt-6">
-            <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6">
+            <div className="bg-[#111827]/70 backdrop-blur-sm border border-[#1F2937]/80 rounded-xl p-6">
               <div className="flex items-start gap-4">
                 <span className="text-3xl">1️⃣</span>
                 <div>
@@ -78,7 +78,7 @@ export default function About() {
               </div>
             </div>
 
-            <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6">
+            <div className="bg-[#111827]/70 backdrop-blur-sm border border-[#1F2937]/80 rounded-xl p-6">
               <div className="flex items-start gap-4">
                 <span className="text-3xl">2️⃣</span>
                 <div>
@@ -95,7 +95,7 @@ export default function About() {
               </div>
             </div>
 
-            <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6">
+            <div className="bg-[#111827]/70 backdrop-blur-sm border border-[#1F2937]/80 rounded-xl p-6">
               <div className="flex items-start gap-4">
                 <span className="text-3xl">3️⃣</span>
                 <div>
@@ -127,7 +127,7 @@ export default function About() {
             {techStack.map((tech) => (
               <div
                 key={tech.name}
-                className="bg-[#111827] border border-[#1F2937] rounded-xl p-4 flex items-start gap-4 hover:border-blue-500/30 transition-colors"
+                className="bg-[#111827]/70 backdrop-blur-sm border border-[#1F2937]/80 rounded-xl p-4 flex items-start gap-4 hover:border-blue-500/30 transition-colors"
               >
                 <span className="text-2xl mt-0.5">{tech.icon}</span>
                 <div>

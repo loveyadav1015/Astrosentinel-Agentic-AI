@@ -23,7 +23,7 @@ export default function StepFlow() {
     <div className="flex flex-col lg:flex-row gap-4 items-center">
       {steps.map((step, i) => (
         <React.Fragment key={step.title}>
-          <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-6 flex-1 text-center w-full">
+          <div className="bg-[#111827]/70 backdrop-blur-sm border border-[#1F2937]/80 rounded-xl p-6 flex-1 text-center w-full">
             <div className="text-4xl mb-3">{step.icon}</div>
             <h3 className="text-lg font-bold text-white mb-2">{step.title}</h3>
             <p className="text-sm text-[#9CA3AF]">{step.desc}</p>

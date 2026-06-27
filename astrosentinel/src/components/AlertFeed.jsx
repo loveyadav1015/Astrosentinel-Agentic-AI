@@ -15,7 +15,7 @@ export default function AlertFeed({ alerts }) {
   const hasCritical = alerts.some((alert) => alert.tier === 'Critical');
 
   return (
-    <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-5">
+    <div className="bg-[#111827]/70 backdrop-blur-sm border border-[#1F2937]/80 rounded-xl p-5">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-[#F9FAFB] text-lg font-semibold flex items-center gap-2">
           Recent Alerts

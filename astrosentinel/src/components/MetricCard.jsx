@@ -1,7 +1,7 @@
 export default function MetricCard({ icon, label, value, accentColor }) {
   return (
     <div
-      className="bg-[#111827] border border-[#1F2937] rounded-xl p-5 transition-transform duration-200 hover:scale-[1.02] min-w-[180px]"
+      className="bg-[#111827]/70 backdrop-blur-sm border border-[#1F2937]/80 rounded-xl p-5 transition-transform duration-200 hover:scale-[1.02] min-w-[180px]"
       style={accentColor ? { borderLeftWidth: "3px", borderLeftColor: accentColor } : undefined}
     >
       <div className="flex items-start gap-4">

@@ -28,7 +28,7 @@ export default function TierLegend() {
       {tiers.map((t) => (
         <div
           key={t.tier}
-          className={`bg-[#111827] border-l-4 ${t.color} border border-[#1F2937] rounded-xl p-5`}
+          className={`bg-[#111827]/70 backdrop-blur-sm border-l-4 ${t.color} border border-[#1F2937]/80 rounded-xl p-5`}
         >
           <div className="mb-3">
             <RiskBadge tier={t.tier} size="md" />

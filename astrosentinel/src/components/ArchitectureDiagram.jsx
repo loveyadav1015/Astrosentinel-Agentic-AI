@@ -55,7 +55,7 @@ export default function ArchitectureDiagram() {
       {nodes.map((node, i) => (
         <React.Fragment key={node.title}>
           <div
-            className={`bg-[#111827] border ${node.borderClass} rounded-xl p-6 min-w-[180px] text-center flex flex-col items-center justify-center w-full lg:w-auto lg:flex-1`}
+            className={`bg-[#111827]/70 backdrop-blur-sm border ${node.borderClass} rounded-xl p-6 min-w-[180px] text-center flex flex-col items-center justify-center w-full lg:w-auto lg:flex-1`}
           >
             <h4 className="text-white font-bold text-base mb-1">
               {node.title}

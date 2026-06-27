@@ -26,7 +26,7 @@ export default function NeoDetailModal({ neo, onClose }) {
       onClick={onClose}
     >
       <div
-        className="bg-[#111827] border border-[#1F2937] rounded-2xl max-w-2xl w-full mx-4 max-h-[85vh] overflow-y-auto p-6 relative"
+        className="bg-[#111827]/85 backdrop-blur-md border border-[#1F2937]/80 rounded-2xl max-w-2xl w-full mx-4 max-h-[85vh] overflow-y-auto p-6 relative"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close button */}

@@ -9,17 +9,16 @@ const navLinks = [
 ];
 
 const linkClass = ({ isActive }) =>
-  `transition-colors font-medium ${
-    isActive
-      ? "text-blue-400"
-      : "text-[#9CA3AF] hover:text-[#F9FAFB]"
+  `transition-colors font-medium ${isActive
+    ? "text-blue-400"
+    : "text-[#9CA3AF] hover:text-[#F9FAFB]"
   }`;
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <nav className="sticky top-0 z-50 bg-[#0B0F1A] border-b border-[#1F2937]">
+    <nav className="relative z-50 bg-transparent">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -71,16 +70,15 @@ export default function Navbar() {
 
       {/* Mobile dropdown */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-[#1F2937] bg-[#0B0F1A] px-4 pb-4 pt-2 space-y-2">
+        <div className="md:hidden bg-[#0B0F1A]/90 backdrop-blur-md px-4 pb-4 pt-2 space-y-2">
           {navLinks.map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
               className={({ isActive }) =>
-                `block py-2 px-3 rounded-lg transition-colors font-medium ${
-                  isActive
-                    ? "text-blue-400 bg-blue-500/10"
-                    : "text-[#9CA3AF] hover:text-[#F9FAFB] hover:bg-[#1F2937]"
+                `block py-2 px-3 rounded-lg transition-colors font-medium ${isActive
+                  ? "text-blue-400 bg-blue-500/10"
+                  : "text-[#9CA3AF] hover:text-[#F9FAFB] hover:bg-[#1F2937]"
                 }`
               }
               onClick={() => setMobileOpen(false)}

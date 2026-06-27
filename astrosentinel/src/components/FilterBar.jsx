@@ -18,7 +18,7 @@ export default function FilterBar({
   };
 
   return (
-    <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-4 flex flex-wrap gap-4 items-end">
+    <div className="bg-[#111827]/70 backdrop-blur-sm border border-[#1F2937]/80 rounded-xl p-4 flex flex-wrap gap-4 items-end">
       {/* Tier Select */}
       <div className="flex flex-col">
         <label className="text-xs text-[#9CA3AF] uppercase tracking-wider mb-1">

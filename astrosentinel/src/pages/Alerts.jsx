@@ -1,15 +1,60 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import FilterBar from '../components/FilterBar';
 import RiskBadge from '../components/RiskBadge';
-import { alertHistory } from '../data/mockData';
 
 export default function Alerts() {
   const [tierFilter, setTierFilter] = useState('All');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
 
+  // --- LIVE DATA STATES ---
+  const [alertsData, setAlertsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // --- FETCH LIVE DATA ---
+  useEffect(() => {
+    fetch('http://localhost:5000/api/neo')
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to fetch from backend');
+        return res.json();
+      })
+      .then((data) => {
+        // Map the live NASA objects into the format your Alerts table expects
+        const mappedAlerts = data.objects.map((obj) => {
+          // Determine tier based on live metrics
+          let currentTier = 'Watch';
+          if (obj.isHazardous) currentTier = 'Critical';
+          else if (obj.sizeMax > 200) currentTier = 'Elevated';
+
+          return {
+            id: obj.id,
+            timestamp: new Date().toISOString(), // Backend fetches today's data
+            objectName: obj.name,
+            tier: currentTier,
+            diameter: obj.sizeMax,
+            missDistance: obj.distance,
+            // Simulate delivery metadata for a realistic UI
+            channels: obj.isHazardous ? 'SMS, Email, Push' : 'System Log',
+            status: 'Sent'
+          };
+        });
+
+        // Sort so Critical alerts appear at the top
+        mappedAlerts.sort((a, b) => (a.tier === 'Critical' ? -1 : (b.tier === 'Critical' ? 1 : 0)));
+
+        setAlertsData(mappedAlerts);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching live alerts:", err);
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
+
   const filteredAlerts = useMemo(() => {
-    return alertHistory.filter((alert) => {
+    return alertsData.filter((alert) => {
       // Tier filter
       if (tierFilter !== 'All' && alert.tier !== tierFilter) return false;
       
@@ -20,7 +65,7 @@ export default function Alerts() {
       
       return true;
     });
-  }, [tierFilter, dateFrom, dateTo]);
+  }, [tierFilter, dateFrom, dateTo, alertsData]);
 
   const formatTimestamp = (ts) => {
     const d = new Date(ts);
@@ -32,6 +77,24 @@ export default function Alerts() {
       minute: '2-digit',
     });
   };
+
+  // --- LOADING / ERROR STATES ---
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#040814] text-blue-400 font-mono">
+        <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mr-3"></div>
+        LOADING THREAT ASSESSMENTS...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#040814] text-red-400 font-mono">
+        ⚠️ SYSTEM ERROR: {error}
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">
@@ -58,11 +121,11 @@ export default function Alerts() {
 
         {/* Results count */}
         <div className="mb-4 text-sm text-[#9CA3AF]">
-          Showing <span className="text-white font-medium">{filteredAlerts.length}</span> of {alertHistory.length} alerts
+          Showing <span className="text-white font-medium">{filteredAlerts.length}</span> of {alertsData.length} active logs
         </div>
 
         {/* Alerts Table */}
-        <div className="bg-[#111827] border border-[#1F2937] rounded-xl overflow-hidden">
+        <div className="bg-[#111827]/70 backdrop-blur-sm border border-[#1F2937]/80 rounded-xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
@@ -71,7 +134,7 @@ export default function Alerts() {
                   <th className="px-4 py-3.5 font-medium">Object Name</th>
                   <th className="px-4 py-3.5 font-medium">Risk Tier</th>
                   <th className="px-4 py-3.5 font-medium">Diameter (m)</th>
-                  <th className="px-4 py-3.5 font-medium">Miss Distance (LD)</th>
+                  <th className="px-4 py-3.5 font-medium">Miss Distance (km)</th>
                   <th className="px-4 py-3.5 font-medium">Delivery Channels</th>
                   <th className="px-4 py-3.5 font-medium">Status</th>
                 </tr>
@@ -104,7 +167,7 @@ export default function Alerts() {
                         {alert.diameter}
                       </td>
                       <td className="px-4 py-3.5 tabular-nums">
-                        {alert.missDistance}
+                        {alert.missDistance.toLocaleString()}
                       </td>
                       <td className="px-4 py-3.5">
                         <div className="flex flex-wrap gap-1">

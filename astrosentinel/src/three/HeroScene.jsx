@@ -1,6 +1,6 @@
-import React, { useRef, useMemo, Suspense } from 'react';
+import React, { useRef, useMemo, useState, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Stars, Line } from '@react-three/drei';
+import { OrbitControls, Stars, Line, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { getTexture } from './ProceduralTextures';
 import {
@@ -214,6 +214,203 @@ function AsteroidBeltInstanced() {
   );
 }
 
+// ── Incoming Asteroid (animated on curved path) ──────────────────────
+
+function IncomingAsteroid() {
+  const asteroidRef = useRef();
+  const trailRef = useRef();
+  const tRef = useRef(0);
+
+  // Flight path: far top-right → near origin → past origin
+  const curve = useMemo(() => new THREE.CatmullRomCurve3([
+    new THREE.Vector3(12,  8, -4),
+    new THREE.Vector3( 5,  3,  0),
+    new THREE.Vector3( 2,  1,  1),
+    new THREE.Vector3(-3, -2,  3),
+  ]), []);
+
+  // Fire trail particles
+  const PARTICLE_COUNT = 100;
+  const trailData = useMemo(() => {
+    const positions = new Float32Array(PARTICLE_COUNT * 3);
+    const colors    = new Float32Array(PARTICLE_COUNT * 3);
+    const sizes     = new Float32Array(PARTICLE_COUNT);
+    return { positions, colors, sizes };
+  }, []);
+
+  useFrame((state, delta) => {
+    if (!asteroidRef.current) return;
+
+    // Advance along curve
+    tRef.current = (tRef.current + delta * 0.10) % 1;
+    const point = curve.getPointAt(tRef.current);
+    asteroidRef.current.position.copy(point);
+
+    // Face direction of travel
+    const tangent = curve.getTangentAt(tRef.current);
+    asteroidRef.current.lookAt(point.clone().add(tangent));
+
+    // Slow tumble
+    asteroidRef.current.rotation.x += delta * 0.8;
+    asteroidRef.current.rotation.z += delta * 0.5;
+
+    // Update fire trail
+    if (trailRef.current) {
+      const { positions, colors, sizes } = trailData;
+
+      // Shift particles back
+      for (let i = PARTICLE_COUNT - 1; i > 0; i--) {
+        positions[i * 3]     = positions[(i - 1) * 3];
+        positions[i * 3 + 1] = positions[(i - 1) * 3 + 1];
+        positions[i * 3 + 2] = positions[(i - 1) * 3 + 2];
+
+        const ratio = i / PARTICLE_COUNT;
+        colors[i * 3]     = 1 - ratio * 0.5;     // R: 1 → 0.5
+        colors[i * 3 + 1] = (1 - ratio) * 0.45;  // G: 0.45 → 0
+        colors[i * 3 + 2] = 0;                    // B: always 0
+        sizes[i] = Math.max(0, 1 - ratio) * 0.15;
+      }
+
+      // Insert new particle at asteroid position
+      positions[0] = point.x;
+      positions[1] = point.y;
+      positions[2] = point.z;
+      colors[0] = 1; colors[1] = 0.6; colors[2] = 0.1;
+      sizes[0] = 0.15;
+
+      trailRef.current.geometry.attributes.position.needsUpdate = true;
+      trailRef.current.geometry.attributes.color.needsUpdate    = true;
+      trailRef.current.geometry.attributes.size.needsUpdate     = true;
+    }
+  });
+
+  const distToOrigin = asteroidRef.current
+    ? asteroidRef.current.position.length()
+    : 999;
+
+  return (
+    <>
+      {/* Asteroid mesh */}
+      <mesh ref={asteroidRef}>
+        <icosahedronGeometry args={[0.18, 1]} />
+        <meshStandardMaterial
+          color={0x8B7355}
+          roughness={0.9}
+          metalness={0.1}
+        />
+
+        {/* Tooltip: show when near Earth (within 6 units of Sun/origin) */}
+        <AsteroidTooltip asteroidRef={asteroidRef} />
+      </mesh>
+
+      {/* Fire trail particles */}
+      <points ref={trailRef}>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            array={trailData.positions}
+            count={PARTICLE_COUNT}
+            itemSize={3}
+          />
+          <bufferAttribute
+            attach="attributes-color"
+            array={trailData.colors}
+            count={PARTICLE_COUNT}
+            itemSize={3}
+          />
+          <bufferAttribute
+            attach="attributes-size"
+            array={trailData.sizes}
+            count={PARTICLE_COUNT}
+            itemSize={1}
+          />
+        </bufferGeometry>
+        <pointsMaterial
+          size={0.12}
+          vertexColors
+          transparent
+          opacity={0.75}
+          sizeAttenuation
+        />
+      </points>
+    </>
+  );
+}
+
+// ── Asteroid Tooltip ─────────────────────────────────────────────────
+
+function AsteroidTooltip({ asteroidRef }) {
+  const [visible, setVisible] = useState(false);
+
+  useFrame(() => {
+    if (!asteroidRef.current) return;
+    const dist = asteroidRef.current.position.length();
+    setVisible(dist < 6);
+  });
+
+  if (!visible) return null;
+
+  return (
+    <Html
+      position={[0.5, 0.5, 0]}
+      center={false}
+      style={{ pointerEvents: 'none' }}
+    >
+      <div
+        style={{
+          fontFamily: 'monospace',
+          fontSize: '11px',
+          color: 'white',
+          background: 'rgba(0,0,0,0.72)',
+          border: '1px solid rgba(31,41,55,0.9)',
+          padding: '8px 12px',
+          borderRadius: '8px',
+          lineHeight: '1.6',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        <div style={{ color: '#9ca3af', marginBottom: '4px', letterSpacing: '0.1em' }}>
+          INCOMING ASTEROID
+        </div>
+        TRAJECTORY: <span style={{ color: '#22c55e' }}>Confirmed</span><br />
+        SIZE: ~50m<br />
+        VELOCITY: 18 km/s
+      </div>
+    </Html>
+  );
+}
+
+// ── Status Bar (bottom of scene) ─────────────────────────────────────
+
+function StatusBar() {
+  const [opacity, setOpacity] = useState(1);
+
+  useFrame((state) => {
+    // Pulse: 1 → 0.3 every 1s
+    setOpacity(0.65 + 0.35 * Math.abs(Math.sin(state.clock.elapsedTime * Math.PI)));
+  });
+
+  return (
+    <Html
+      position={[0, -3.6, 0]}
+      center
+      style={{ pointerEvents: 'none' }}
+    >
+      <div
+        style={{
+          fontFamily: 'monospace',
+          fontSize: '11px',
+          color: '#22c55e',
+          textAlign: 'center',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        <span style={{ opacity }}>●</span> System Operational — Monitoring Active
+      </div>
+    </Html>
+  );
+}
+
 // ── HeroScene (default export) ───────────────────────────────────────
 
 export default function HeroScene({ className, style }) {
@@ -252,6 +449,12 @@ export default function HeroScene({ className, style }) {
         {/* Asteroid belt */}
         <AsteroidBeltInstanced />
 
+        {/* Incoming asteroid with fire trail + tooltip */}
+        <IncomingAsteroid />
+
+        {/* Status bar at bottom */}
+        <StatusBar />
+
         {/* Camera controls */}
         <OrbitControls
           autoRotate
@@ -266,3 +469,4 @@ export default function HeroScene({ className, style }) {
     </Canvas>
   );
 }
+

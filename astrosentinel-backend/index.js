@@ -23,6 +23,10 @@ const groq = new Groq({
 // --- DATABASE CONNECTION ---
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
+    ssl: {
+    // This tells the driver not to worry about the certificate chain
+    rejectUnauthorized: false 
+  }
 });
 
 pool.connect()

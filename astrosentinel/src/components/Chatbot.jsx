@@ -3,7 +3,7 @@ import { MessageSquare, X, Send } from 'lucide-react';
 import axios from 'axios';
 
 
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export default function Chatbot({ neoData }) {
   const [isOpen, setIsOpen] = useState(false);

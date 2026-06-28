@@ -18,7 +18,7 @@ export default function Dashboard() {
   // --- FETCH LIVE DATA FROM BACKEND ---
   const fetchTelemetry = () => {
     setLoading(true);
-    fetch('http://localhost:5000/api/neo')
+    fetch(`${import.meta.env.VITE_API_URL}/api/neo`)
       .then((res) => {
         if (!res.ok) throw new Error('Failed to fetch from backend');
         return res.json();

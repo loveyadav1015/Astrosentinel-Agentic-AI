@@ -9,7 +9,9 @@ const cron = require('node-cron');
 const app = express();
 const PORT = process.env.PORT || 5000; // Added fallback port just in case
 
-app.use(cors());
+app.use(cors({
+    origin: ['https://astrosentinel.netlify.app', 'http://localhost:5173'] 
+}));
 app.use(express.json());
 
 // Initialize Groq with your API key
